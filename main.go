@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/radionoise/do-ddns-client/log"
+	"github.com/radionoise/do-ddns/log"
 	"io/ioutil"
 	"time"
 )

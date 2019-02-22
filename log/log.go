@@ -6,7 +6,7 @@ import (
 )
 
 const (
-	SyslogTag = "do-ddns-client"
+	SyslogTag = "do-ddns"
 )
 
 var writer *syslog.Writer
