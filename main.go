@@ -1,18 +1,33 @@
 package main
 
 import (
+	"flag"
 	"fmt"
-	"github.com/radionoise/do-ddns/log"
 	"io/ioutil"
 	"time"
 )
 
-var ()
+var (
+	IpAddr            string
+	Hostname          string
+	DigitalOceanToken string
+	TzFile            string
+)
 
 func main() {
+	flag.StringVar(&IpAddr, "ip", "", "IP address")
+	flag.StringVar(&Hostname, "host", "", "Hostname")
+	flag.StringVar(&DigitalOceanToken, "token", "", "DigitalOcean access token")
+	flag.StringVar(&TzFile, "tz", "", "tzinfo file to override system timezone")
+	flag.Parse()
 
-	fmt.Println(time.Now())
-	log.Notice("Hello world!")
+	if IpAddr == "" || Hostname == "" || DigitalOceanToken == "" {
+		panic("Not enough parameters. See -h or --help for help")
+	}
+
+	if TzFile != "" {
+		overrideTimezone(TzFile)
+	}
 }
 
 func overrideTimezone(tzFileName string) {
