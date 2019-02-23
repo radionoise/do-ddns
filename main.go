@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"github.com/radionoise/do-ddns/client"
 	"io/ioutil"
 	"time"
 )
@@ -28,6 +29,15 @@ func main() {
 	if TzFile != "" {
 		overrideTimezone(TzFile)
 	}
+
+	doClient := client.New(IpAddr, Hostname, DigitalOceanToken)
+	domains, err := doClient.ListDomains()
+
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println(domains)
 }
 
 func overrideTimezone(tzFileName string) {
