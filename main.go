@@ -38,6 +38,14 @@ func main() {
 	}
 
 	fmt.Println(domains)
+
+	records, err := doClient.ListDomainRecords(domains[0].Name)
+
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println(records)
 }
 
 func overrideTimezone(tzFileName string) {

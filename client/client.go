@@ -8,8 +8,9 @@ import (
 )
 
 const (
-	apiUrl     = "https://api.digitalocean.com/v2"
-	domainsUrl = apiUrl + "/domains"
+	apiUrl           = "https://api.digitalocean.com/v2"
+	domainsUrl       = apiUrl + "/domains"
+	domainRecordsUrl = domainsUrl + "/%v/records"
 )
 
 type Client struct {
@@ -72,4 +73,15 @@ func (c Client) request(method string, url string, body io.Reader, result interf
 	}
 
 	return nil
+}
+
+func (c Client) ListDomainRecords(domain string) ([]DomainRecord, error) {
+	var records DomainRecords
+	err := c.request(http.MethodGet, fmt.Sprintf(domainRecordsUrl, domain), nil, &records)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return records.DomainRecords, nil
 }

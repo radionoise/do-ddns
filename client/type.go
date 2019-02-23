@@ -18,3 +18,14 @@ type Domain struct {
 type Domains struct {
 	Domains []Domain `json:"domains"`
 }
+
+type DomainRecord struct {
+	Id     int    `json:"id"`
+	Type   string `json:"type"`
+	Name   string `json:"name"`
+	IpAddr string `json:"data"`
+}
+
+type DomainRecords struct {
+	DomainRecords []DomainRecord `json:"domain_records"`
+}
