@@ -3,6 +3,7 @@ package log
 import (
 	"fmt"
 	"log/syslog"
+	"os"
 )
 
 const (
@@ -26,6 +27,15 @@ func init() {
 	writer = syslogWriter
 }
 
+func Debug(m string) {
+	fmt.Println(m)
+	err := writer.Debug(m)
+
+	if err != nil {
+		panic(err)
+	}
+}
+
 func Notice(m string) {
 	fmt.Println(m)
 	err := writer.Notice(m)
@@ -36,8 +46,13 @@ func Notice(m string) {
 }
 
 func Error(m string) {
-	fmt.Println(m)
-	err := writer.Err(m)
+	_, err := fmt.Fprint(os.Stderr, m)
+
+	if err != nil {
+		panic(err)
+	}
+
+	err = writer.Err(m)
 
 	if err != nil {
 		panic(err)
