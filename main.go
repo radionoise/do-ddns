@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"flag"
 	"fmt"
 	"github.com/radionoise/do-ddns/client"
@@ -54,18 +55,18 @@ func main() {
 }
 
 func overrideTimezone(tzFileName string) {
-	fmt.Printf("Using timezone file: %v\n", tzFileName)
+	log.Debug(fmt.Sprintf("Using timezone file: %v\n", tzFileName))
 
 	result, err := ioutil.ReadFile(tzFileName)
 
 	if err != nil {
-		panic(fmt.Sprintf("Cannot open timezone file: %v", tzFileName))
+		log.Panic(errors.New(fmt.Sprintf("Cannot open timezone file: %v", tzFileName)))
 	}
 
 	location, err := time.LoadLocationFromTZData("", result)
 
 	if err != nil {
-		panic(fmt.Sprintf("Error loading timezone from tzif file: %v", err))
+		log.Panic(errors.New(fmt.Sprintf("Error loading timezone from tzif file: %v", err)))
 	}
 
 	time.Local = location
