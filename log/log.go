@@ -52,6 +52,12 @@ func Error(m string) {
 		panic(err)
 	}
 
+	_, err = fmt.Fprintln(os.Stderr)
+
+	if err != nil {
+		panic(err)
+	}
+
 	syslogWrite(m, writer.Err)
 }
 
