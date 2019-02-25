@@ -31,21 +31,14 @@ func main() {
 	}
 
 	doClient := client.New(IpAddr, Hostname, DigitalOceanToken)
-	domains, err := doClient.ListDomains()
+
+	newDomain, err := doClient.CreateDomain("dan1.com")
 
 	if err != nil {
 		panic(err)
 	}
 
-	fmt.Println(domains)
-
-	records, err := doClient.ListDomainRecords(domains[0].Name)
-
-	if err != nil {
-		panic(err)
-	}
-
-	fmt.Println(records)
+	fmt.Println(newDomain.Name)
 }
 
 func overrideTimezone(tzFileName string) {

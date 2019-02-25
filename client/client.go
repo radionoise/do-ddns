@@ -1,9 +1,9 @@
 package client
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
-	"io"
 	"net/http"
 )
 
@@ -40,8 +40,25 @@ func (c Client) setHeaders(request *http.Request) {
 	request.Header.Add("Content-Type", "application/json")
 }
 
-func (c Client) request(method string, url string, body io.Reader, result interface{}) error {
-	request, err := http.NewRequest(method, url, body)
+func (c Client) request(method string, url string, body interface{}, result interface{}) error {
+	var jsonBody []byte
+	var err error
+
+	if body != nil {
+		jsonBody, err = json.Marshal(body)
+
+		if err != nil {
+			return err
+		}
+	}
+
+	var jsonBuffer *bytes.Buffer
+
+	if body != nil {
+		jsonBuffer = bytes.NewBuffer(jsonBody)
+	}
+
+	request, err := http.NewRequest(method, url, jsonBuffer)
 
 	if err != nil {
 		panic(err)
@@ -55,7 +72,7 @@ func (c Client) request(method string, url string, body io.Reader, result interf
 		return err
 	}
 
-	if response.StatusCode != http.StatusOK {
+	if response.StatusCode != http.StatusOK && response.StatusCode != http.StatusCreated {
 		var apiError apiError
 		err = json.NewDecoder(response.Body).Decode(&apiError)
 
@@ -84,4 +101,15 @@ func (c Client) ListDomainRecords(domain string) ([]DomainRecord, error) {
 	}
 
 	return records.DomainRecords, nil
+}
+
+func (c Client) CreateDomain(domain string) (*Domain, error) {
+	var newDomain NewDomain
+	err := c.request(http.MethodPost, domainsUrl, Domain{Name: domain}, &newDomain)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &newDomain.Domain, nil
 }

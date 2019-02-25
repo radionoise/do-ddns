@@ -15,6 +15,10 @@ type Domain struct {
 	Name string `json:"name"`
 }
 
+type NewDomain struct {
+	Domain Domain `json:"domain"`
+}
+
 type Domains struct {
 	Domains []Domain `json:"domains"`
 }
