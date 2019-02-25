@@ -8,9 +8,10 @@ import (
 )
 
 const (
-	apiUrl           = "https://api.digitalocean.com/v2"
-	domainsUrl       = apiUrl + "/domains"
-	domainRecordsUrl = domainsUrl + "/%v/records"
+	apiUrl                = "https://api.digitalocean.com/v2"
+	domainsUrl            = apiUrl + "/domains"
+	domainRecordsUrl      = domainsUrl + "/%v/records"
+	domainUpdateRecordUrl = domainRecordsUrl + "/%v"
 )
 
 type Client struct {
@@ -127,7 +128,7 @@ func (c Client) CreateDomainRecord(domain string, record DomainRecord) (*DomainR
 
 func (c Client) UpdateDomainRecord(domain string, record DomainRecord) (*DomainRecord, error) {
 	var newRecord DomainRecordResponse
-	err := c.request(http.MethodPut, fmt.Sprintf(domainRecordsUrl, domain), record, &newRecord)
+	err := c.request(http.MethodPut, fmt.Sprintf(domainUpdateRecordUrl, domain, record.Id), record, &newRecord)
 
 	if err != nil {
 		return nil, err

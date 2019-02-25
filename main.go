@@ -41,10 +41,16 @@ func main() {
 	errPanic(err)
 
 	log.Debug(fmt.Sprintf("Found domains: %v", domains))
-	secondLevel, err := util.GetSecondLevelName(Hostname)
+	parsedDomain, err := util.ParseDomain(Hostname)
 	errPanic(err)
 
-	createDomainIfNotExists(secondLevel, domains, doClient)
+	createDomainIfNotExists(parsedDomain.Name, domains, doClient)
+
+	log.Debug("Getting domain records")
+	records, err := doClient.ListDomainRecords(parsedDomain.Name)
+	errPanic(err)
+
+	createOrUpdateRecord(IpAddr, *parsedDomain, records, doClient)
 }
 
 func overrideTimezone(tzFileName string) {
@@ -93,4 +99,32 @@ func createDomainIfNotExists(secondLevel string, domains []client.Domain, doClie
 
 		log.Notice(fmt.Sprintf("Successfully created new domain: %v", response.Name))
 	}
+}
+
+func createOrUpdateRecord(ipAddrd string, domain util.Domain, records []client.DomainRecord, doClient *client.Client) {
+	var record *client.DomainRecord
+
+	for _, val := range records {
+		if val.Type == "A" && val.Name == domain.Record {
+			record = &val
+
+			break
+		}
+	}
+
+	if record == nil {
+		log.Debug(fmt.Sprintf("Domain record not found. Creating new record: %v", domain))
+		record, err := doClient.CreateDomainRecord(domain.Name, client.DomainRecord{Type: "A", Name: domain.Record, IpAddr: ipAddrd})
+		errPanic(err)
+		log.Notice(fmt.Sprintf("Successfully created new domain record: %v", record))
+
+		return
+	}
+
+	record.IpAddr = ipAddrd
+
+	record, err := doClient.UpdateDomainRecord(domain.Name, *record)
+	errPanic(err)
+
+	log.Notice(fmt.Sprintf("Successfully updated domain record: %v", record))
 }
