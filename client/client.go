@@ -113,3 +113,25 @@ func (c Client) CreateDomain(domain string) (*Domain, error) {
 
 	return &newDomain.Domain, nil
 }
+
+func (c Client) CreateDomainRecord(domain string, record DomainRecord) (*DomainRecord, error) {
+	var newRecord DomainRecordResponse
+	err := c.request(http.MethodPost, fmt.Sprintf(domainRecordsUrl, domain), record, &newRecord)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &newRecord.DomainRecord, nil
+}
+
+func (c Client) UpdateDomainRecord(domain string, record DomainRecord) (*DomainRecord, error) {
+	var newRecord DomainRecordResponse
+	err := c.request(http.MethodPut, fmt.Sprintf(domainRecordsUrl, domain), record, &newRecord)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &newRecord.DomainRecord, nil
+}

@@ -58,3 +58,13 @@ func Error(m string) {
 		panic(err)
 	}
 }
+
+func Panic(err error) {
+	writeErr := writer.Err(err.Error())
+
+	if writeErr != nil {
+		panic(writeErr)
+	}
+
+	panic(err)
+}

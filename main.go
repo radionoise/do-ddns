@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"github.com/radionoise/do-ddns/client"
+	"github.com/radionoise/do-ddns/log"
 	"io/ioutil"
 	"time"
 )
@@ -23,7 +24,7 @@ func main() {
 	flag.Parse()
 
 	if IpAddr == "" || Hostname == "" || DigitalOceanToken == "" {
-		panic("Not enough parameters. See -h or --help for help")
+		log.Panic("Not enough parameters. See -h or --help for help")
 	}
 
 	if TzFile != "" {
@@ -35,7 +36,7 @@ func main() {
 	newDomain, err := doClient.CreateDomain("dan1.com")
 
 	if err != nil {
-		panic(err)
+		log.Panic(string(err))
 	}
 
 	fmt.Println(newDomain.Name)
