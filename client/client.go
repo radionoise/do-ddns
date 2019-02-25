@@ -52,7 +52,7 @@ func (c Client) request(method string, url string, body interface{}, result inte
 		}
 	}
 
-	var jsonBuffer *bytes.Buffer
+	jsonBuffer := bytes.NewBuffer([]byte{})
 
 	if body != nil {
 		jsonBuffer = bytes.NewBuffer(jsonBody)
