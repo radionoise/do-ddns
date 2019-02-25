@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/radionoise/do-ddns/client"
 	"github.com/radionoise/do-ddns/log"
+	"github.com/radionoise/do-ddns/util"
 	"io/ioutil"
 	"os"
 	"time"
@@ -37,12 +38,13 @@ func main() {
 
 	log.Debug("Getting domains")
 	domains, err := doClient.ListDomains()
-
-	if err != nil {
-		panic(err)
-	}
+	errPanic(err)
 
 	log.Debug(fmt.Sprintf("Found domains: %v", domains))
+	secondLevel, err := util.GetSecondLevelName(Hostname)
+	errPanic(err)
+
+	createDomainIfNotExists(secondLevel, domains, doClient)
 }
 
 func overrideTimezone(tzFileName string) {
@@ -61,4 +63,34 @@ func overrideTimezone(tzFileName string) {
 	}
 
 	time.Local = location
+}
+
+func errPanic(err error) {
+	if err != nil {
+		log.Panic(err)
+	}
+}
+
+func createDomainIfNotExists(secondLevel string, domains []client.Domain, doClient *client.Client) {
+	found := false
+
+	for _, val := range domains {
+		if secondLevel == val.Name {
+			log.Debug(fmt.Sprintf("Found existing domain: %v", val))
+			found = true
+
+			return
+		}
+	}
+
+	if !found {
+		log.Debug(fmt.Sprintf("Domain not found. Creating new domain: %v", secondLevel))
+		response, err := doClient.CreateDomain(secondLevel)
+
+		if err != nil {
+			log.Panic(err)
+		}
+
+		log.Notice(fmt.Sprintf("Successfully created new domain: %v", response.Name))
+	}
 }
