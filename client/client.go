@@ -25,7 +25,7 @@ func New(ipAddr string, hostname string, digitalOceanToken string) *Client {
 }
 
 func (c Client) ListDomains() ([]Domain, error) {
-	var domains Domains
+	var domains DomainListResponse
 	err := c.request(http.MethodGet, domainsUrl, nil, &domains)
 
 	if err != nil {
@@ -93,7 +93,7 @@ func (c Client) request(method string, url string, body interface{}, result inte
 }
 
 func (c Client) ListDomainRecords(domain string) ([]DomainRecord, error) {
-	var records DomainRecords
+	var records DomainRecordListResponse
 	err := c.request(http.MethodGet, fmt.Sprintf(domainRecordsUrl, domain), nil, &records)
 
 	if err != nil {
@@ -104,7 +104,7 @@ func (c Client) ListDomainRecords(domain string) ([]DomainRecord, error) {
 }
 
 func (c Client) CreateDomain(domain string) (*Domain, error) {
-	var newDomain NewDomain
+	var newDomain DomainResponse
 	err := c.request(http.MethodPost, domainsUrl, Domain{Name: domain}, &newDomain)
 
 	if err != nil {

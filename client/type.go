@@ -15,11 +15,11 @@ type Domain struct {
 	Name string `json:"name"`
 }
 
-type NewDomain struct {
+type DomainResponse struct {
 	Domain Domain `json:"domain"`
 }
 
-type Domains struct {
+type DomainListResponse struct {
 	Domains []Domain `json:"domains"`
 }
 
@@ -30,6 +30,10 @@ type DomainRecord struct {
 	IpAddr string `json:"data"`
 }
 
-type DomainRecords struct {
+type DomainRecordResponse struct {
+	DomainRecord DomainRecord `json:"domain_record"`
+}
+
+type DomainRecordListResponse struct {
 	DomainRecords []DomainRecord `json:"domain_records"`
 }
