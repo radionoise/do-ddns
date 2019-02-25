@@ -29,7 +29,11 @@ func init() {
 
 func Debug(m string) {
 	fmt.Println(m)
-	err := writer.Debug(m)
+	syslogWrite(m, writer.Debug)
+}
+
+func syslogWrite(m string, writeFunc func(string) error) {
+	err := writeFunc(m)
 
 	if err != nil {
 		panic(err)
@@ -38,11 +42,7 @@ func Debug(m string) {
 
 func Notice(m string) {
 	fmt.Println(m)
-	err := writer.Notice(m)
-
-	if err != nil {
-		panic(err)
-	}
+	syslogWrite(m, writer.Notice)
 }
 
 func Error(m string) {
@@ -52,19 +52,10 @@ func Error(m string) {
 		panic(err)
 	}
 
-	err = writer.Err(m)
-
-	if err != nil {
-		panic(err)
-	}
+	syslogWrite(m, writer.Err)
 }
 
 func Panic(err error) {
-	writeErr := writer.Err(err.Error())
-
-	if writeErr != nil {
-		panic(writeErr)
-	}
-
+	syslogWrite(err.Error(), writer.Err)
 	panic(err)
 }
