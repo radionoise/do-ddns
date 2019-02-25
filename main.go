@@ -35,13 +35,14 @@ func main() {
 
 	doClient := client.New(IpAddr, Hostname, DigitalOceanToken)
 
-	newDomain, err := doClient.CreateDomain("dan1.com")
+	log.Debug("Getting domains")
+	domains, err := doClient.ListDomains()
 
 	if err != nil {
-		log.Panic(err)
+		panic(err)
 	}
 
-	fmt.Println(newDomain.Name)
+	log.Debug(fmt.Sprintf("Found domains: %v", domains))
 }
 
 func overrideTimezone(tzFileName string) {
