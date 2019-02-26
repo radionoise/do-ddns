@@ -101,5 +101,5 @@ func createOrUpdateRecord(ipAddrd string, domain util.Domain, records []client.D
 	record, err := doClient.UpdateDomainRecord(domain.Name, *record)
 	errPanic(err)
 
-	log.Notice(fmt.Sprintf("Successfully updated domain: %v with record: %v", domain.Name, record))
+	log.Notice(fmt.Sprintf("Successfully updated domain %v with record: %v", domain.Name, record))
 }
