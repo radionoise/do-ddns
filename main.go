@@ -87,10 +87,11 @@ func createOrUpdateRecord(ipAddrd string, domain util.Domain, records []client.D
 	}
 
 	if record == nil {
-		log.Debug(fmt.Sprintf("Domain record not found. Creating new record: %v", domain))
-		record, err := doClient.CreateDomainRecord(domain.Name, client.DomainRecord{Type: "A", Name: domain.Record, IpAddr: ipAddrd})
+		newRecord := client.DomainRecord{Type: "A", Name: domain.Record, IpAddr: ipAddrd}
+		log.Debug(fmt.Sprintf("Domain record not found. Creating new record: %v", newRecord))
+		record, err := doClient.CreateDomainRecord(domain.Name, newRecord)
 		errPanic(err)
-		log.Notice(fmt.Sprintf("Successfully created new domain record: %v", record))
+		log.Notice(fmt.Sprintf("Successfully created new domain %v with record: %v", domain.Name, record))
 
 		return
 	}
@@ -100,5 +101,5 @@ func createOrUpdateRecord(ipAddrd string, domain util.Domain, records []client.D
 	record, err := doClient.UpdateDomainRecord(domain.Name, *record)
 	errPanic(err)
 
-	log.Notice(fmt.Sprintf("Successfully updated domain record: %v", record))
+	log.Notice(fmt.Sprintf("Successfully updated domain: %v with record: %v", domain.Name, record))
 }
